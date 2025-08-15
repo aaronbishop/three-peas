@@ -1,12 +1,9 @@
 Rails.application.routes.draw do
-  get "recipes/index"
-  get "recipes/new"
-  get "recipes/show"
-  get "recipes/create"
-  get "recipes/edit"
-  get "recipes/update"
-  get "recipes/destroy"
-  get "recipes/search"
+  resources :recipes
+  get "recipes/search", to: "recipes#search"
+
+  resources :ingredients
+  get "ingredients/search", to: "ingredients#search"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -18,5 +15,5 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  # root "posts#index"
+  root "recipes#index"
 end
