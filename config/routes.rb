@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
-  resources :recipes
+  resources :recipes do
+    resources :ingredients
+  end
   get "recipes/search", to: "recipes#search"
-
-  resources :ingredients
   get "ingredients/search", to: "ingredients#search"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
