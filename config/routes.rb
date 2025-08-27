@@ -1,19 +1,34 @@
 Rails.application.routes.draw do
-  resources :recipes do
-    resources :ingredients
-  end
-  get "recipes/search", to: "recipes#search"
-  get "ingredients/search", to: "ingredients#search"
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  namespace :api do
+    namespace :v1 do
+      # Recipes + ingredients
+      resources :recipes do
+        resources :ingredients
+        resources :comments, only: [ :index, :create, :destroy ]
+        resource  :favorite, only: [ :create, :destroy ] # singular → one favorite per recipe per user
+      end
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
+      # Favorites index (all saved recipes for current user)
+      resources :favorites, only: [ :index ]
+
+      # Search routes
+      get "recipes/search", to: "recipes#search"
+      get "ingredients/search", to: "ingredients#search"
+
+      # User management
+      resources :users, only: [ :index, :show, :update, :destroy ]
+      post "/signup", to: "users#create"
+      get "/me", to: "users#me"
+
+      # Authentication
+      post "/login", to: "sessions#create"
+      delete "/logout", to: "sessions#destroy"
+    end
+  end
+
+  # Health check
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-
-  # Defines the root path route ("/")
+  # Root path
   root "recipes#index"
 end

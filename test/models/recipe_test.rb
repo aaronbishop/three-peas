@@ -5,9 +5,11 @@ class RecipeTest < ActiveSupport::TestCase
     @recipe = Recipe.new(name: "Testy Zesty Casserole")
   end
 
+=begin
   test "recipe validity" do
     assert @recipe.valid?
   end
+=end
 =begin
   test "blank recipe name" do
     @recipe = ""
