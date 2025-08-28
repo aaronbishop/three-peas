@@ -1,22 +1,39 @@
+// src/pages/FavoritesPage.jsx
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { getFavorites } from "../services/favorites";
+import { useAuth } from "../context/useAuth";
+import RecipeCard from "../components/RecipeCard";
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState([]);
   const [error, setError] = useState("");
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/v1/recipes/favorites")
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch favorites");
-        return res.json();
-      })
+    if (loading) return; // wait until auth state is resolved
+
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    getFavorites()
       .then(setFavorites)
       .catch((err) => {
         console.error(err);
-        setError("Could not load favorites.");
+        setError(err.message || "Could not load favorites.");
       });
-  }, []);
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="max-w-2xl mx-auto p-6 text-center">
+        Loading your favorites...
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -37,22 +54,11 @@ export default function FavoritesPage() {
   return (
     <div className="max-w-2xl mx-auto p-6">
       <h2 className="text-3xl font-bold mb-6">Your Favorites</h2>
-      <ul className="space-y-4">
+      <div className="space-y-4">
         {favorites.map((recipe) => (
-          <li
-            key={recipe.id}
-            className="border rounded p-4 hover:bg-gray-50 transition"
-          >
-            <Link
-              to={`/recipes/${recipe.id}`}
-              className="text-xl font-semibold text-green-700 hover:underline"
-            >
-              {recipe.name}
-            </Link>
-            <p className="text-sm text-gray-600">{recipe.prep_time} prep</p>
-          </li>
+          <RecipeCard key={recipe.id} recipe={recipe} />
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

@@ -73,6 +73,7 @@ Frontend (React + Vite)
 Vite proxies API calls (/api/v1/...) to Rails (http://localhost:3000).
 
 📡 API Endpoints
+
 Auth
 
     POST /api/v1/signup – create new user

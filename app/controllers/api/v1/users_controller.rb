@@ -10,7 +10,11 @@ module Api
         user = User.new(user_params)
         if user.save
           session[:user_id] = user.id
-          render json: user.as_json(only: [ :id, :email, :role ]), status: :created
+          render json: {
+            message: "Account created",
+            token: nil, # placeholder for JWT
+            user: user.as_json(only: [ :id, :email, :role ])
+          }, status: :created
         else
           render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
         end
@@ -19,7 +23,7 @@ module Api
       # GET /api/v1/me
       def me
         if current_user
-          render json: current_user.as_json(only: [ :id, :email, :role ])
+          render json: { user: current_user.as_json(only: [ :id, :email, :role ]) }, status: :ok
         else
           render json: { error: "Not logged in" }, status: :unauthorized
         end
@@ -27,7 +31,8 @@ module Api
 
       # GET /api/v1/users (admin only)
       def index
-        render json: User.all.as_json(only: [ :id, :email, :role ])
+        users = User.all
+        render json: { users: users.as_json(only: [ :id, :email, :role ]) }, status: :ok
       end
 
       # PATCH/PUT /api/v1/users/:id
@@ -35,20 +40,24 @@ module Api
         user = User.find(params[:id])
         if current_user == user || current_user.admin?
           if user.update(user_params)
-            render json: user.as_json(only: [ :id, :email, :role ])
+            render json: { user: user.as_json(only: [ :id, :email, :role ]) }, status: :ok
           else
             render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
           end
         else
           render json: { error: "Forbidden" }, status: :forbidden
         end
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: "User not found" }, status: :not_found
       end
 
       # DELETE /api/v1/users/:id (admin only)
       def destroy
         user = User.find(params[:id])
         user.destroy
-        head :no_content
+        render json: { message: "User deleted" }, status: :ok
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: "User not found" }, status: :not_found
       end
 
       private

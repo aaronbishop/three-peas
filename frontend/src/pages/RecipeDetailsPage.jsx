@@ -1,23 +1,40 @@
+// src/pages/RecipeDetailsPage.jsx
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { getRecipe } from "../services/recipes";
+import FavoriteToggle from "../components/FavoriteToggle";
+import { useAuth } from "../context/useAuth";
 
 export default function RecipeDetailsPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [recipe, setRecipe] = useState(null);
   const [error, setError] = useState("");
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    fetch(`/api/v1/recipes/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch recipe");
-        return res.json();
-      })
+    if (loading) return; // wait until auth resolves
+
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    getRecipe(id)
       .then(setRecipe)
       .catch((err) => {
         console.error(err);
-        setError("Could not load recipe.");
+        setError(err.message || "Could not load recipe.");
       });
-  }, [id]);
+  }, [id, user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="max-w-2xl mx-auto p-6 text-center">
+        Loading recipe...
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -29,13 +46,19 @@ export default function RecipeDetailsPage() {
 
   if (!recipe) {
     return (
-      <div className="max-w-2xl mx-auto p-6 text-center">Loading recipe...</div>
+      <div className="max-w-2xl mx-auto p-6 text-center">
+        Loading recipe...
+      </div>
     );
   }
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow rounded mt-10">
-      <h2 className="text-3xl font-bold mb-4">{recipe.name}</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-3xl font-bold">{recipe.name}</h2>
+        {!loading && user && <FavoriteToggle recipeId={id} />}
+      </div>
+
       <p className="mb-2 text-gray-700">
         <span className="font-semibold">Prep:</span> {recipe.prep_time} |{" "}
         <span className="font-semibold">Cook:</span> {recipe.cook_time} |{" "}

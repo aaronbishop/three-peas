@@ -10,6 +10,19 @@ module ThreePeas
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
+    config.api_only = true
+
+    # Disable generation of non-api assets when using generators
+    config.generators do |g|
+      g.assets false
+      g.helper false
+      g.stylesheets false
+      g.jbuilder false
+    end
+
+    # Enable cookies + sessions in API mode
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.

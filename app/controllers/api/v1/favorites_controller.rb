@@ -8,14 +8,20 @@ module Api
       # GET /api/v1/favorites
       def index
         favorites = current_user.favorite_recipes
-        render json: favorites
+        render json: favorites.as_json(
+          only: [ :id, :name, :prep_time, :cook_time, :servings, :url, :created_at ]
+        ), status: :ok
       end
+
 
       # POST /api/v1/recipes/:recipe_id/favorite
       def create
         favorite = current_user.favorites.build(recipe: @recipe)
         if favorite.save
-          render json: { message: "Recipe added to favorites" }, status: :created
+          render json: {
+            message: "Recipe added to favorites",
+            recipe: @recipe.as_json(only: [ :id, :name ])
+          }, status: :created
         else
           render json: { errors: favorite.errors.full_messages }, status: :unprocessable_entity
         end
@@ -26,7 +32,7 @@ module Api
         favorite = current_user.favorites.find_by(recipe: @recipe)
         if favorite
           favorite.destroy
-          render json: { message: "Recipe removed from favorites" }
+          render json: { message: "Recipe removed from favorites" }, status: :ok
         else
           render json: { error: "Not in favorites" }, status: :not_found
         end
@@ -36,6 +42,8 @@ module Api
 
       def set_recipe
         @recipe = Recipe.find(params[:recipe_id])
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: "Recipe not found" }, status: :not_found
       end
     end
   end

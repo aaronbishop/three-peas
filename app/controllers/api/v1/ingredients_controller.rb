@@ -8,12 +8,12 @@ module Api
 
       # GET /api/v1/recipes/:recipe_id/ingredients
       def index
-        render json: @recipe.ingredients
+        render json: @recipe.ingredients, status: :ok
       end
 
       # GET /api/v1/recipes/:recipe_id/ingredients/:id
       def show
-        render json: @ingredient
+        render json: @ingredient, status: :ok
       end
 
       # POST /api/v1/recipes/:recipe_id/ingredients
@@ -29,7 +29,7 @@ module Api
       # PATCH/PUT /api/v1/recipes/:recipe_id/ingredients/:id
       def update
         if @ingredient.update(ingredient_params)
-          render json: @ingredient
+          render json: @ingredient, status: :ok
         else
           render json: { errors: @ingredient.errors.full_messages }, status: :unprocessable_entity
         end
@@ -43,23 +43,33 @@ module Api
 
       # GET /api/v1/ingredients/search?q=...
       def search
-        q = params[:q]
-        results = Ingredient.where("name LIKE ?", "%#{q}%")
-        render json: results
+        results = Ingredient.where("name LIKE ?", "%#{params[:q]}%")
+        render json: results, status: :ok
       end
 
       private
 
       def set_recipe
         @recipe = Recipe.find(params[:recipe_id])
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: "Recipe not found" }, status: :not_found
       end
 
       def set_ingredient
         @ingredient = @recipe.ingredients.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: "Ingredient not found" }, status: :not_found
       end
 
       def ingredient_params
         params.require(:ingredient).permit(:name, :quantity, :measurement)
+      end
+
+      # Stub until we wire role enforcement
+      def require_creator!
+        unless current_user&.role == "creator"
+          render json: { error: "Forbidden" }, status: :forbidden
+        end
       end
     end
   end

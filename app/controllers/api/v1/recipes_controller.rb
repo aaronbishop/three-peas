@@ -6,11 +6,12 @@ module Api
       before_action :require_creator!, only: [ :create, :update, :destroy ]
 
       def index
-        render json: Recipe.all.order(created_at: :desc)
+        recipes = Recipe.includes(:ingredients).order(created_at: :desc)
+        render json: recipes.to_json(include: :ingredients), status: :ok
       end
 
       def show
-        render json: @recipe.to_json(include: :ingredients)
+        render json: @recipe.to_json(include: :ingredients), status: :ok
       end
 
       def create
@@ -24,7 +25,7 @@ module Api
 
       def update
         if @recipe.update(recipe_params)
-          render json: @recipe
+          render json: @recipe, status: :ok
         else
           render json: { errors: @recipe.errors.full_messages }, status: :unprocessable_entity
         end
@@ -36,19 +37,27 @@ module Api
       end
 
       def search
-        q = params[:q]
-        recipes = Recipe.where("name LIKE ?", "%#{q}%")
-        render json: recipes
+        recipes = Recipe.where("name LIKE ?", "%#{params[:q]}%")
+        render json: recipes, status: :ok
       end
 
       private
 
       def set_recipe
         @recipe = Recipe.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: "Recipe not found" }, status: :not_found
       end
 
       def recipe_params
         params.require(:recipe).permit(:name, :directions, :prep_time, :cook_time, :servings, :url)
+      end
+
+      # Stub for now — enforce role/ownership later
+      def require_creator!
+        unless current_user&.role == "creator"
+          render json: { error: "Forbidden" }, status: :forbidden
+        end
       end
     end
   end
