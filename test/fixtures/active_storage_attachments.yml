@@ -1,0 +1,9 @@
+pasta_image_attachment:
+  name: image
+  record: pasta (Recipe)      # recipe fixture key
+  blob: pasta_image_blob
+
+salad_image_attachment:
+  name: image
+  record: salad (Recipe)      # recipe fixture key
+  blob: salad_image_blob

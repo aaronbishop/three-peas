@@ -1,0 +1,44 @@
+{
+  "id": 7762399,
+  "name": "admin-only-branches",
+  "target": "branch",
+  "source_type": "Repository",
+  "source": "aaronbishop/three-peas",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [
+        "refs/heads/refs/heads/dependabot/**",
+        "refs/heads/refs/heads/renovate/**",
+        "refs/heads/refs/heads/gh-readonly-queue/**"
+      ],
+      "include": [
+        "~ALL"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "update"
+    },
+    {
+      "type": "creation"
+    },
+    {
+      "type": "required_linear_history"
+    }
+  ],
+  "bypass_actors": [
+    {
+      "actor_id": 5,
+      "actor_type": "RepositoryRole",
+      "bypass_mode": "always"
+    }
+  ]
+}

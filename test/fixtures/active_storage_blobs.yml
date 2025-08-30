@@ -1,0 +1,19 @@
+pasta_image_blob:
+  key: "pasta123"
+  filename: "pasta.jpg"
+  content_type: "image/jpeg"
+  metadata: '{"identified":true,"analyzed":true}'
+  service_name: "local"
+  byte_size: 12345
+  checksum: <%= Digest::MD5.base64digest("fake_pasta_image") %>
+  created_at: <%= Time.zone.now %>
+
+salad_image_blob:
+  key: "salad123"
+  filename: "salad.jpg"
+  content_type: "image/jpeg"
+  metadata: '{"identified":true,"analyzed":true}'
+  service_name: "local"
+  byte_size: 67890
+  checksum: <%= Digest::MD5.base64digest("fake_salad_image") %>
+  created_at: <%= Time.zone.now %>

@@ -1,9 +1,11 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+chili_favorite:
+  user: creator
+  recipe: chili
 
-one:
-  user: one
-  recipe: one
+tacos_favorite:
+  user: admin
+  recipe: tacos
 
-two:
-  user: two
-  recipe: two
+cake_favorite:
+  user: reader
+  recipe: cake

@@ -1,13 +1,35 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+chili_beans:
+  name: "Kidney Beans"
+  quantity: 1.5
+  measurement: "cups"
+  recipe: chili
 
-one:
-  recipe_id: 1
-  name: MyString
-  quantity: 1
-  measurement: MyString
+chili_peppers:
+  name: "Jalapeños"
+  quantity: 3
+  measurement: "pieces"
+  recipe: chili
 
-two:
-  recipe_id: 1
-  name: MyString
+tacos_beef:
+  name: "Ground Cow"
   quantity: 1
-  measurement: MyString
+  measurement: "lb"
+  recipe: tacos
+
+tacos_tortillas:
+  name: "Flour Tortillas Are Better"
+  quantity: 8
+  measurement: "pieces"
+  recipe: tacos
+
+cake_flour:
+  name: "All-purpose Flour"
+  quantity: 2
+  measurement: "cups"
+  recipe: cake
+
+cake_cocoa:
+  name: "Cocoa Powder"
+  quantity: 1.75
+  measurement: "cup"
+  recipe: cake

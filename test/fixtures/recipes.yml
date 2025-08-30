@@ -1,17 +1,23 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+chili:
+  name: "Chilly Chili"
+  prep_time: 20
+  cook_time: 45
+  servings: 6
+  url: "https://example.com/spicy-chili"
+  user: creator
 
-one:
-  name: MyString
-  directions: MyText
-  prep_time: MyString
-  cook_time: MyString
-  servings: 1
-  url: MyString
+tacos:
+  name: "Taco Tuesday"
+  prep_time: 15
+  cook_time: 10
+  servings: 4
+  url: "https://example.com/street-tacos"
+  user: reader
 
-two:
-  name: MyString
-  directions: MyText
-  prep_time: MyString
-  cook_time: MyString
-  servings: 1
-  url: MyString
+cake:
+  name: "You Had Me At Cake"
+  prep_time: 30
+  cook_time: 30
+  servings: 8
+  url: "https://example.com/chocolate-cake"
+  user: admin

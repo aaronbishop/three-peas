@@ -1,0 +1,17 @@
+chili_directions:
+  record_type: Recipe
+  record_id: <%= ActiveRecord::FixtureSet.identify(:chili) %>
+  name: directions
+  body: "<div>Simmer beans and peppers for 45 minutes.</div>"
+
+tacos_directions:
+  record_type: Recipe
+  record_id: <%= ActiveRecord::FixtureSet.identify(:tacos) %>
+  name: directions
+  body: "<div>Grill carne asada and serve with tortillas.</div>"
+
+cake_directions:
+  record_type: Recipe
+  record_id: <%= ActiveRecord::FixtureSet.identify(:cake) %>
+  name: directions
+  body: "<div>Bake at 350°F for 30 minutes.</div>"
